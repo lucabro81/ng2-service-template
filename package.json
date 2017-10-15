@@ -24,9 +24,13 @@
     "@ionic-native/splash-screen": "4.3.0",
     "@ionic-native/status-bar": "4.3.0",
     "@ionic/storage": "2.0.1",
+    "@types/node": "^8.0.33",
+    "@types/signals": "0.0.17",
     "ionic-angular": "3.7.1",
     "ionicons": "3.0.0",
+    "lucabro-linked-list": "^1.0.28",
     "rxjs": "5.4.3",
+    "signals": "^1.0.0",
     "sw-toolbox": "3.6.0",
     "zone.js": "0.8.18"
   },
