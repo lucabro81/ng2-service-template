@@ -51,8 +51,13 @@ export class MyApp {
             //     });
 
             // todo: se si passa nul come listener si spacca, cheffacciolascio?
+
+            // console.log("dasdd",this.test_service
+            //     .testServiceObj
+            //     .signals);
+
             this.test_service
-                .testService
+                .testSrv
                 .signals
                 .onTestServiceSuccess.add(() => {
                     console.log("signal onTestServiceSuccess");
@@ -62,7 +67,7 @@ export class MyApp {
                 }, this);
 
             this.test_service
-                .testService
+                .testSrv
                 .request({some_data:"data", other_data:"more_data"})
                 .synchronize()
                 // .setRequestId("ziocan")
@@ -96,11 +101,11 @@ export class MyApp {
                 .run();
 
             this.test_service
-                .testService
+                .testSrv
                 .request({some_data:"data", other_data:"more_data"}).synchronize().run();
 
             this.test_service
-                .testService
+                .testSrv
                 .request({some_data:"data", other_data:"more_data"}).synchronize().run();
         });
     }

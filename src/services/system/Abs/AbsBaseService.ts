@@ -12,6 +12,7 @@ import { OverrideRequestDataVO } from "../../../vo/OverrideRequestDataVO";
 import {RequestManager} from "../RequestManager";
 import {ResponseVO} from "../../../vo/ResponseVO";
 import {AbsListener} from "../Listener/AbsListener";
+import {IService} from "../IService";
 
 export class AbsBaseService {
 
@@ -20,6 +21,7 @@ export class AbsBaseService {
     public static is_connection_enabled:boolean = true;
 
     private static loading:Loading;
+
     private static stop_loading:number;
 
     /**
@@ -33,6 +35,8 @@ export class AbsBaseService {
     constructor(public http:Http,
                 public alertCtrl:AlertController,
                 public loadingCtrl:LoadingController) {
+
+        console.log("this1", this);
 
     }
 
@@ -54,6 +58,8 @@ export class AbsBaseService {
         //
         let url:string = this.setSegmentedUrl(options.endpoint.url, options.data);
         let override_data:OverrideRequestDataVO = this.overrideRequestData(options);
+
+        console.log("this2", this);
 
         let response:Observable<T> = this.http.get(url, options.config);
 
@@ -277,6 +283,80 @@ export class AbsBaseService {
         // }
     }
 
+    /**
+     *
+     * @param id_request
+     * @returns {Array<T>}
+     */
+    public getListeners<T>(id_request:string):Array<T> {
+        return RequestManager.getListeners<T>(id_request);
+    }
+
+    /**
+     *
+     * @param id_request
+     * @returns {RequestManager<R, L>}
+     */
+    public getRequest(id_request:string):RequestManager<any, any> {
+        return RequestManager.getRequest(id_request);
+    }
+
+///////////////////////////////
+////////// PROTECTED //////////
+///////////////////////////////
+
+    /**
+     *
+     * @param request_manager
+     * @param options
+     * @param success_handler
+     * @param error_handler
+     * @returns {RequestManager<ResponseVO<R>, ResponseVO<any>>}
+     */
+    protected setRequestGet<T, R extends AbsListener>(request_manager:RequestManager<ResponseVO<T>, R>,
+                                                      options:RequestVO,
+                                                      success_handler: (response: ResponseVO<any>) => void,
+                                                      error_handler: (error) => void):RequestManager<ResponseVO<T>, R> {
+        let request:Observable<ResponseVO<any>> = this.requestGet<ResponseVO<any>>(options);
+        return request_manager.init(request, success_handler, error_handler);
+    }
+
+    /**
+     *
+     * @param request_manager
+     * @param evt_name
+     * @param response
+     */
+    protected fireEvent(request_manager:any, evt_name:string, response:any):void {
+        // metto request_manager e response a any altrimenti si diventa pazzi passando generics ovunque
+        let l:number = RequestManager.listener_decorator.length;
+        for (let i = 0; i < l; i++) {
+            if (RequestManager.listener_decorator[i].id === request_manager.id_request &&
+                RequestManager.listener_decorator[i].listener[evt_name]) {
+                RequestManager.listener_decorator[i].listener[evt_name](response);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param signal_container
+     * @param obj_name
+     * @returns {IService<R, L, S>}
+     */
+    protected setServiceObj<R, L extends AbsListener, S>(signal_container:{new(): S; }, obj_name:string):IService<R, L, S> {
+        let service_obj:IService<R, L, S> = <IService<R, L, S>>{};
+
+        service_obj.request =
+            (params:any):RequestManager<ResponseVO<R>, L> => {
+                return this["_" + obj_name](params);
+            };
+
+        service_obj.signals = new signal_container();
+
+        return service_obj;
+    }
+
 /////////////////////////////
 ////////// PRIVATE //////////
 /////////////////////////////
@@ -444,19 +524,4 @@ export class AbsBaseService {
 
     }
 
-    /**
-     *
-     * @param request_manager
-     * @param options
-     * @param success_handler
-     * @param error_handler
-     * @returns {RequestManager<ResponseVO<R>, ResponseVO<any>>}
-     */
-    protected setRequestGet<T, R extends AbsListener>(request_manager:RequestManager<ResponseVO<T>, R>,
-                                                      options:RequestVO,
-                                                      success_handler: (response: ResponseVO<any>) => void,
-                                                      error_handler: (error) => void):RequestManager<ResponseVO<T>, R> {
-        let request:Observable<ResponseVO<any>> = this.requestGet<ResponseVO<any>>(options);
-        return request_manager.init(request, success_handler, error_handler);
-    }
 }

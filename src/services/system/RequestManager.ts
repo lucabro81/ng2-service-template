@@ -1,3 +1,5 @@
+// TODO: set a request priority
+
 import {Observable} from "rxjs";
 import {AbsListener} from "./Listener/AbsListener";
 import {Listener} from "./Listener/Listener";
@@ -7,7 +9,6 @@ import {ListElement} from "lucabro-linked-list/package/ListElement";
 export class RequestManager<R, T extends AbsListener> {
 
     // public static
-    // public static request_queue:Array<() => void> = []; //Todo: may be linked list
     public static request_queue_list:LinkedList<ListElement>;
     public static listener_decorator:Array<{id:string, listener:any}> = [];
     public static request_manager_list:{[id:string]:any} = {};
@@ -34,6 +35,7 @@ export class RequestManager<R, T extends AbsListener> {
 /////////////////////////////////
 
     /**
+     * Inizializzazione
      *
      * @constructor
      */
@@ -54,6 +56,7 @@ export class RequestManager<R, T extends AbsListener> {
 ////////////////////////////
 
     /**
+     * Set request object and handlers for success and error
      *
      * @param request
      * @param onSuccess
@@ -69,6 +72,7 @@ export class RequestManager<R, T extends AbsListener> {
     }
 
     /**
+     * Set a string id for the request of the current instance, then store request data in the requests queue
      *
      * @param id
      * @returns {RequestManager}
@@ -102,6 +106,7 @@ export class RequestManager<R, T extends AbsListener> {
     }
 
     /**
+     * Set a listener object for the current request
      *
      * @param listener_decorator
      * @param id
@@ -118,6 +123,7 @@ export class RequestManager<R, T extends AbsListener> {
     }
 
     /**
+     * Retrieve the listener object by request id form the request queue
      *
      * @param id
      * @returns {any}
@@ -136,6 +142,7 @@ export class RequestManager<R, T extends AbsListener> {
     }
 
     /**
+     * Retrieve the request object by request id form the request queue
      *
      * @param id
      * @returns {any}
@@ -154,6 +161,7 @@ export class RequestManager<R, T extends AbsListener> {
     }
 
     /**
+     * Synchorize the request in the queue: a request will be executed only when the last one is finished
      *
      * @returns {RequestManager}
      */
@@ -163,6 +171,7 @@ export class RequestManager<R, T extends AbsListener> {
     }
 
     /**
+     * Asynchronize the request in the queue, they will be executed together
      *
      * @returns {RequestManager}
      */
@@ -172,6 +181,7 @@ export class RequestManager<R, T extends AbsListener> {
     }
 
     /**
+     * Stop the execution of the request queue when errors occurs
      *
      * @returns {RequestManager}
      */
@@ -182,7 +192,7 @@ export class RequestManager<R, T extends AbsListener> {
     }
 
     /**
-     *
+     * Run the current request
      */
     public run() {
 
@@ -190,6 +200,7 @@ export class RequestManager<R, T extends AbsListener> {
             this.id_request = "id_" + RequestManager.id_index++;
         }
 
+        // if the current id doesn't math with stored ones in the listener queue, a default listenr is created
         if (!this.checkListenerIdRequest()) {
             RequestManager.listener_decorator.push(
                 {
@@ -223,21 +234,11 @@ export class RequestManager<R, T extends AbsListener> {
             RequestManager.listener_decorator[i].listener.init(new Listener());
         }
 
-
         if (this.is_synchronized) {
-            //console.log("RequestManager.request_queue_list.length()", RequestManager.request_queue_list);
             RequestManager.request_queue_list.addElem({ subscribe: this.setSubscribe, scope:this});
-            //console.log("RequestManager.request_queue_list.length()", RequestManager.request_queue_list);
             if (RequestManager.request_queue_list.length() === 1) {
-                //console.log("this.request", this.request);
-                //console.log("RequestManager.request_queue_list.start.data", RequestManager.request_queue_list.start.data);
                 return RequestManager.request_queue_list.start.data.subscribe();
             }
-
-            // RequestManager.request_queue.push(this.setSubscribe);
-            // if (RequestManager.request_queue.length === 1) {
-            //     return RequestManager.request_queue[0]();
-            // }
 
         }
         else {
@@ -321,6 +322,7 @@ export class RequestManager<R, T extends AbsListener> {
     }
 
     /**
+     * Check if the request id of the current request match with aanother one in the queue of listeners
      *
      * @returns {boolean}
      */
