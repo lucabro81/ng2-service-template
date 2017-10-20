@@ -16,9 +16,9 @@ export class TestService extends AbsBaseService {
     // 1 - define an object of type IService<Response type, Listener decorator, Signal container>
     public testSrv:IService<any, OnTestServiceMethodListener, TestServiceMethodSignalContainer>;
 
-    constructor(public http:Http,
-                public alertCtrl:AlertController,
-                public loadingCtrl:LoadingController) {
+    constructor(protected http:Http,
+                protected alertCtrl:AlertController,
+                protected loadingCtrl:LoadingController) {
         super(http, alertCtrl, loadingCtrl);
         // 2 - initialize the object passing the Signal container class and the name
         this.testSrv =

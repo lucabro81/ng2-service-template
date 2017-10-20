@@ -16,9 +16,9 @@ import {IService} from "../IService";
 
 export class AbsBaseService {
 
-    public static is_loading_active:boolean = false;
-    public static is_loading_enabled:boolean = false;
-    public static is_connection_enabled:boolean = true;
+    protected static is_loading_active:boolean = false;
+    protected static is_loading_enabled:boolean = false;
+    protected static is_connection_enabled:boolean = true;
 
     private static loading:Loading;
 
@@ -32,17 +32,17 @@ export class AbsBaseService {
      * @param loadingCtrl
      * @param secureStorage
      */
-    constructor(public http:Http,
-                public alertCtrl:AlertController,
-                public loadingCtrl:LoadingController) {
+    constructor(protected http:Http,
+                protected alertCtrl:AlertController,
+                protected loadingCtrl:LoadingController) {
 
         console.log("this1", this);
 
     }
 
-////////////////////////////
-////////// PUBLIC //////////
-////////////////////////////
+///////////////////////////////
+////////// PROTECTED //////////
+///////////////////////////////
 
     /**
      * Gestisce una richiesta http GET, di default gestisce anche la fine della richiesta
@@ -50,7 +50,7 @@ export class AbsBaseService {
      * @param options                   oggetto che descrive la richiesta
      * @returns {Observable<Response>}
      */
-    public requestGet<T extends Response>(options:RequestVO):Observable<T> {
+    protected requestGet<T extends Response>(options:RequestVO):Observable<T> {
 
         console.log("inizio richiesta");
 
@@ -72,7 +72,7 @@ export class AbsBaseService {
      * @param options
      * @returns {Observable<R>}
      */
-    public requestPost<T extends Response>(options:RequestVO):Observable<T> {
+    protected requestPost<T extends Response>(options:RequestVO):Observable<T> {
 
         options.config.headers = this.setHeaders(options);
 
@@ -98,7 +98,7 @@ export class AbsBaseService {
      * @param options
      * @returns {Observable<Response>}
      */
-    public post(options:RequestVO):Observable<Response> {
+    protected post(options:RequestVO):Observable<Response> {
 
         options.config.headers = this.setHeaders(options);
 
@@ -117,7 +117,7 @@ export class AbsBaseService {
      * @param options
      * @returns {Observable<R>}
      */
-    public requestPut<T extends Response>(options:RequestVO):Observable<T> {
+    protected requestPut<T extends Response>(options:RequestVO):Observable<T> {
 
         options.config.headers = this.setHeaders(options);
 
@@ -133,7 +133,7 @@ export class AbsBaseService {
      * @param options
      * @returns {Observable<Response>}
      */
-    public put(options:RequestVO):Observable<Response> {
+    protected put(options:RequestVO):Observable<Response> {
 
         let url:string = this.setSegmentedUrl(options.endpoint.url, options.data);
 
@@ -147,7 +147,7 @@ export class AbsBaseService {
      * @param options
      * @returns {Observable<R>}
      */
-    public requestDelete<T extends Response>(options:RequestVO):Observable<T> {
+    protected requestDelete<T extends Response>(options:RequestVO):Observable<T> {
 
         options.config.headers = this.setHeaders(options);
 
@@ -163,7 +163,7 @@ export class AbsBaseService {
      * @param options
      * @returns {Observable<Response>}
      */
-    public delete(options:RequestVO):Observable<Response> {
+    protected delete(options:RequestVO):Observable<Response> {
 
         let url:string = this.setSegmentedUrl(options.endpoint.url, options.data);
 
@@ -176,7 +176,7 @@ export class AbsBaseService {
      *
      * @param message_obj
      */
-    public showAlert(message_obj:DefaultAlertStructureVO):void {
+    protected showAlert(message_obj:DefaultAlertStructureVO):void {
         let alert = this.alertCtrl.create({
             title: message_obj.title,
             subTitle: message_obj.body,
@@ -192,7 +192,7 @@ export class AbsBaseService {
      * @param url
      * @returns {{}}
      */
-    public onSuccess(response:Response, url:string):Promise<any> {
+    protected onSuccess(response:Response, url:string):Promise<any> {
         // console.log("response", response);
 
         console.log("onSuccess fine richiesta");
@@ -224,7 +224,7 @@ export class AbsBaseService {
      * @param warning_level
      * @returns {any}
      */
-    public onError(error:Response,
+    protected onError(error:Response,
                    error_signals:Array<Signal>,
                    error_intercept:boolean,
                    error_callback:() => void,
@@ -256,7 +256,7 @@ export class AbsBaseService {
         return Observable.throw(error_json || 'Server error');
     }
 
-    public presentLoadingDefault() {
+    protected presentLoadingDefault() {
 
         // if (AbsBaseService.is_loading_enabled) {
             AbsBaseService.is_loading_active = true;
@@ -269,7 +269,7 @@ export class AbsBaseService {
         // }
     }
 
-    public dismissLoadingDefault() {
+    protected dismissLoadingDefault() {
 
         // console.log("this.loading, AbsBaseService.is_loading_enabled",
         //     this.loading, AbsBaseService.is_loading_enabled);
@@ -288,7 +288,7 @@ export class AbsBaseService {
      * @param id_request
      * @returns {Array<T>}
      */
-    public getListeners<T>(id_request:string):Array<T> {
+    protected getListeners<T>(id_request:string):Array<T> {
         return RequestManager.getListeners<T>(id_request);
     }
 
@@ -297,13 +297,9 @@ export class AbsBaseService {
      * @param id_request
      * @returns {RequestManager<R, L>}
      */
-    public getRequest(id_request:string):RequestManager<any, any> {
+    protected getRequest(id_request:string):RequestManager<any, any> {
         return RequestManager.getRequest(id_request);
     }
-
-///////////////////////////////
-////////// PROTECTED //////////
-///////////////////////////////
 
     /**
      *
