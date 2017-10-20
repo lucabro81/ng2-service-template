@@ -1,14 +1,6 @@
-import {AbsSignal} from "../Signal/AbsSignal";
 import {ISignal} from "../Signal/ISignal";
-import {SignalBinding} from "signals";
 
-class MethodSignalContainer {
-    constructor() {
-
-    }
-}
-
-export class AbsDecoratedSignal extends AbsSignal {
+export class AbsDecoratedSignal<T> {
 
 
     /**
@@ -27,10 +19,10 @@ export class AbsDecoratedSignal extends AbsSignal {
      */
     VERSION: string;
 
-    protected container:MethodSignalContainer;
+    protected container:T;
 
-    constructor(decorated_signal:ISignal, container:MethodSignalContainer) {
-        super(decorated_signal);
+    constructor(private decorated_signal:ISignal, container:T) {
+
         this.decorated_signal = decorated_signal;
         this.container = container;
 
@@ -51,15 +43,9 @@ export class AbsDecoratedSignal extends AbsSignal {
      */
     public add(listener: Function,
                listenerContext?: any,
-               priority?: Number):any {
+               priority?: Number):T {
         this.decorated_signal.add(listener, listenerContext, priority);
         return this.container;
-    }
-
-    public addReturn(listener: Function,
-                     listenerContext?: any,
-                     priority?: Number):SignalBinding {
-        return this.decorated_signal.add(listener, listenerContext, priority);
     }
 
     /**
@@ -75,15 +61,9 @@ export class AbsDecoratedSignal extends AbsSignal {
      */
     public addOnce(listener: Function,
                    listenerContext?: any,
-                   priority?: Number):any {
+                   priority?: Number):T {
         this.decorated_signal.addOnce(listener, listenerContext, priority);
         return this.container;
-    }
-
-    public addOnceReturn(listener: Function,
-                         listenerContext?: any,
-                         priority?: Number):SignalBinding {
-        return this.decorated_signal.addOnce(listener, listenerContext, priority);
     }
 
     /**
@@ -91,7 +71,7 @@ export class AbsDecoratedSignal extends AbsSignal {
      *
      * @param params Parameters that should be passed to each handler.
      */
-    public dispatch(...params: any[]): any {
+    public dispatch(...params: any[]): T {
         this.decorated_signal.dispatch(params);
         return this.container;
     }
@@ -99,7 +79,7 @@ export class AbsDecoratedSignal extends AbsSignal {
     /**
      * Remove all bindings from signal and destroy any reference to external objects (destroy Signal object).
      */
-    public dispose(): any {
+    public dispose(): T {
         this.decorated_signal.dispose();
         return this.container;
     }
@@ -107,7 +87,7 @@ export class AbsDecoratedSignal extends AbsSignal {
     /**
      * Forget memorized arguments.
      */
-    public forget(): any {
+    public forget(): T {
         this.decorated_signal.forget();
         return this.container;
     }
@@ -115,15 +95,14 @@ export class AbsDecoratedSignal extends AbsSignal {
     /**
      * Returns a number of listeners attached to the Signal.
      */
-    public getNumListeners(): any {
-        this.decorated_signal.getNumListeners();
-        return this.container;
+    public getNumListeners(): number {
+        return this.decorated_signal.getNumListeners();
     }
 
     /**
      * Stop propagation of the event, blocking the dispatch to next listeners on the queue.
      */
-    public halt(): any {
+    public halt(): T {
         this.decorated_signal.halt();
         return this.container;
     }
@@ -134,13 +113,7 @@ export class AbsDecoratedSignal extends AbsSignal {
      * @param return_container
      */
     public has(listener: Function,
-               context?: any):any {
-        this.decorated_signal.has(listener, context);
-        return this.container;
-    }
-
-    public hasReturn(listener: Function,
-                     context?: any):boolean {
+               context?: any):boolean {
         return this.decorated_signal.has(listener, context);
     }
 
@@ -149,16 +122,16 @@ export class AbsDecoratedSignal extends AbsSignal {
      *
      * @param return_container
      */
-    public remove(listener: Function, context?: any):any {
+    public remove(listener: Function, context?: any):Function {
+        return this.decorated_signal.remove(listener, context);
+    }
+
+    public removeAnd(listener: Function, context?: any):T {
         this.decorated_signal.remove(listener, context);
         return this.container;
     }
 
-    public removeReturn(listener: Function, context?: any):Function {
-        return this.decorated_signal.remove(listener, context);
-    }
-
-    public removeAll(): any {
+    public removeAll(): T {
         this.decorated_signal.removeAll();
         return this.container;
     }
