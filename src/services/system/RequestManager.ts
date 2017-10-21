@@ -236,7 +236,9 @@ export class RequestManager<R, T extends AbsListener> {
 
         if (this.is_synchronized) {
             RequestManager.request_queue_list.addElem({ subscribe: this.setSubscribe, scope:this});
+            console.log("RequestManager.request_queue_list.length()", RequestManager.request_queue_list.length());
             if (RequestManager.request_queue_list.length() === 1) {
+                console.log("dfghjk");
                 return RequestManager.request_queue_list.start.data.subscribe();
             }
 
@@ -294,7 +296,6 @@ export class RequestManager<R, T extends AbsListener> {
      *
      */
     private setSubscribe() {
-        console.log("this", this);
         this.scope.request.subscribe(
             (evt) => {
                 this.scope.subscribeSuccess(evt);

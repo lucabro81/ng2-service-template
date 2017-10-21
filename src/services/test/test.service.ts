@@ -1,7 +1,6 @@
-import {Injectable, Input} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {RequestManager} from "../system/RequestManager";
 import {AbsBaseService} from "../system/Abs/AbsBaseService";
-import {RequestVO} from "../../vo/RequestVO";
 import {EndPoints} from "../../utils/EndPoints";
 import {ResponseVO} from "../../vo/ResponseVO";
 import { Http } from "@angular/http";
@@ -9,6 +8,7 @@ import {AlertController, LoadingController} from "ionic-angular";
 import {OnTestServiceMethodListener} from "./decorators/OnTestServiceMethodListener";
 import {TestServiceMethodSignalContainer} from "./decorators/TestServiceMethodSignalContainer";
 import {IService} from "../system/IService";
+import {ServiceMethodDecorator} from "../system/Decorators/ServiceMethodDecorator";
 
 @Injectable()
 export class TestService extends AbsBaseService {
@@ -32,54 +32,27 @@ export class TestService extends AbsBaseService {
      * @returns {RequestManager<ResponseVO<ResponseVO<any>>, onTestServiceMethodListener>}
      */
     // 3 - set a service method with name "_" + service name
-    private _testSrv(params:any):RequestManager<ResponseVO<any>, OnTestServiceMethodListener> {
+    @ServiceMethodDecorator<ResponseVO<any>, OnTestServiceMethodListener>({
+        endpoint: EndPoints.USERS_ME,
+        config: {}
+    })
+    private _testSrv(params:any):any {
+        return {
+            success_handler:
+                (response: ResponseVO<any>) => {
+                    this.testSrv.signals.onTestServiceSuccess.dispatch();
+                    this.fireEvent(params.request_manager, "eventOne", response);
+                    this.testSrv.signals.onTestServiceEventOne.dispatch();
 
-        console.log("this", this);
+                },
 
-        let request_manager:RequestManager<ResponseVO<any>, OnTestServiceMethodListener> =
-            new RequestManager<ResponseVO<any>, OnTestServiceMethodListener>();
-
-        ////////////////////////////////////////////////////////
-
-        let success_handler:(
-                response: ResponseVO<any>,
-                //req_manager:RequestManager<ResponseVO<any>, OnTestServiceMethodListener>
-            ) => void =
-            (
-                response: ResponseVO<any>,
-                // req_manager:RequestManager<ResponseVO<any>, OnTestServiceMethodListener>
-            ) => {
-                this.testSrv.signals.onTestServiceSuccess.dispatch();
-                this.fireEvent(request_manager, "eventOne", response);
-                this.testSrv.signals.onTestServiceEventOne.dispatch();
-
-            };
-
-        let error_handler:(
-                error,
-                // req_manager:any
-        ) => void =
-        (error) => {
-            this.testSrv.signals.onTestServiceError.dispatch();
-            this.fireEvent(request_manager, "eventTwo", error);
-            this.testSrv.signals.onTestServiceEventOne.dispatch();
-        };
-
-        ////////////////////////////////////////////////////////
-
-
-        let options:RequestVO = {
-            endpoint: EndPoints.USERS_ME,
-            config: {},
-            data: params
-        };
-
-        return this.setRequestGet<ResponseVO<any>, OnTestServiceMethodListener>(
-            request_manager,
-            options,
-            success_handler,
-            error_handler
-        );
+            error_handler:
+                (error) => {
+                    this.testSrv.signals.onTestServiceError.dispatch();
+                    this.fireEvent(params.request_manager, "eventTwo", error);
+                    this.testSrv.signals.onTestServiceEventOne.dispatch();
+                }
+        }
     }
 
 }

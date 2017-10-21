@@ -8,7 +8,7 @@ import { Signal } from "signals";
 import { RequestVO } from "../../../vo/RequestVO";
 import { AlertController, Loading, LoadingController } from "ionic-angular";
 import { OverrideRequestDataVO } from "../../../vo/OverrideRequestDataVO";
-// import { EndPointVO } from "../../../vo/EndPointVO";
+
 import {RequestManager} from "../RequestManager";
 import {ResponseVO} from "../../../vo/ResponseVO";
 import {AbsListener} from "../Listener/AbsListener";
@@ -36,8 +36,6 @@ export class AbsBaseService {
                 protected alertCtrl:AlertController,
                 protected loadingCtrl:LoadingController) {
 
-        console.log("this1", this);
-
     }
 
 ///////////////////////////////
@@ -52,14 +50,12 @@ export class AbsBaseService {
      */
     protected requestGet<T extends Response>(options:RequestVO):Observable<T> {
 
-        console.log("inizio richiesta");
+        console.log("registrazione richiesta");
 
         options.config.headers = this.setHeaders(options);
         //
         let url:string = this.setSegmentedUrl(options.endpoint.url, options.data);
         let override_data:OverrideRequestDataVO = this.overrideRequestData(options);
-
-        console.log("this2", this);
 
         let response:Observable<T> = this.http.get(url, options.config);
 
@@ -309,10 +305,10 @@ export class AbsBaseService {
      * @param error_handler
      * @returns {RequestManager<ResponseVO<R>, ResponseVO<any>>}
      */
-    protected setRequestGet<T, R extends AbsListener>(request_manager:RequestManager<ResponseVO<T>, R>,
-                                                      options:RequestVO,
-                                                      success_handler: (response: ResponseVO<any>) => void,
-                                                      error_handler: (error) => void):RequestManager<ResponseVO<T>, R> {
+    public setRequestGet(request_manager:RequestManager<ResponseVO<any>, AbsListener>,
+                         options:RequestVO,
+                         success_handler: (response: ResponseVO<any>) => void,
+                         error_handler: (error) => void):RequestManager<ResponseVO<any>, AbsListener> {
         let request:Observable<ResponseVO<any>> = this.requestGet<ResponseVO<any>>(options);
         return request_manager.init(request, success_handler, error_handler);
     }
@@ -509,6 +505,8 @@ export class AbsBaseService {
     }
 
     private nextRequest() {
+
+        console.log("next!!!!");
 
         if (RequestManager.request_queue_list.length() > 1) {
             RequestManager.request_queue_list.shiftLeft();
