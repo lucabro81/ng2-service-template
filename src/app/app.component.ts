@@ -5,7 +5,6 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { HomePage } from '../pages/home/home';
 import {TestService} from "../services/test/test.service";
-import {OnTestServiceMethodListener} from "../services/test/decorators/OnTestServiceMethodListener";
 
 @Component({
     templateUrl: 'app.html'
@@ -102,11 +101,15 @@ export class MyApp {
 
             this.test_service
                 .testSrv
-                .request({some_data:"data", other_data:"more_data"}).synchronize().run();
+                .request({some_data:"data", other_data:"more_data"})
+                .synchronize()
+                .run();
 
             this.test_service
                 .testSrv
-                .request({some_data:"data", other_data:"more_data"}).synchronize().run();
+                .request({some_data:"data", other_data:"more_data"})
+                .synchronize()
+                .run();
         });
     }
 }

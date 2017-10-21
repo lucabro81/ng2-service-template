@@ -188,18 +188,21 @@ export class AbsBaseService {
      * @param url
      * @returns {{}}
      */
-    protected onSuccess(response:Response, url:string):Promise<any> {
+    protected onSuccess(response:Response, url:string, override_data:OverrideRequestDataVO):Promise<any> {
         // console.log("response", response);
 
         console.log("onSuccess fine richiesta");
 
-        this.nextRequest();
+        // if (override_data.warning_level !== WarningLevel.SILENT) {
+        //     if (!AbsBaseService.is_loading_active) {
+        //         this.presentLoadingDefault();
+        //     }
+        //     else {
+        //         clearTimeout(AbsBaseService.stop_loading);
+        //     }
+        // }
 
-        if (AbsBaseService.is_loading_active) {
-            AbsBaseService.stop_loading = window.setTimeout(() => {
-                this.dismissLoadingDefault();
-            }, 300);
-        }
+        this.nextRequest(override_data);
 
         let body = response.json();
 
@@ -228,7 +231,7 @@ export class AbsBaseService {
 
         console.log("onError fine richiesta", error, options);
 
-        this.nextRequest();
+        // this.nextRequest();
 
         this.dispatchSignals(error_signals, error.json());
 
@@ -402,16 +405,17 @@ export class AbsBaseService {
 
         if (override_data.warning_level !== WarningLevel.SILENT) {
             if (!AbsBaseService.is_loading_active) {
+                clearTimeout(AbsBaseService.stop_loading);
                 this.presentLoadingDefault();
             }
-            else {
-                clearTimeout(AbsBaseService.stop_loading);
-            }
+            // else {
+            //     clearTimeout(AbsBaseService.stop_loading);
+            // }
         }
 
         return response
             .flatMap((response:T) => {
-                return this.onSuccess(response, url)
+                return this.onSuccess(response, url, override_data)
             })
             .catch((response:any) => this.onError(response, options.error_signals, options.error_intercept,
                 options.error_callback, override_data.warning_level, options));
@@ -504,7 +508,7 @@ export class AbsBaseService {
         }
     }
 
-    private nextRequest() {
+    private nextRequest(override_data:OverrideRequestDataVO) {
 
         console.log("next!!!!");
 
@@ -513,6 +517,14 @@ export class AbsBaseService {
             RequestManager.request_queue_list.start.data.subscribe();
         }
         else {
+
+            // FIXME: da vedere come fare per chiamate non sincronizate
+            if (AbsBaseService.is_loading_active) {
+                AbsBaseService.stop_loading = window.setTimeout(() => {
+                    this.dismissLoadingDefault();
+                }, 300);
+            }
+
             RequestManager.request_queue_list.destroy();
         }
 
