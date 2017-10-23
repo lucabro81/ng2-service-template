@@ -11,8 +11,6 @@ import {RequestVO} from "../../vo/RequestVO";
 export class RequestManager<R, T extends AbsListener> {
 
     // public static
-    // public static onStartRequest:Signal = new Signal();
-    // public static onFinishRequest:Signal = new Signal();
     public static request_queue_list:LinkedList<ListElement>;
     public static listener_decorator:Array<{id:string, listener:any}> = [];
     public static request_manager_list:{[id:string]:any} = {};
@@ -329,14 +327,14 @@ export class RequestManager<R, T extends AbsListener> {
      */
     private setSubscribe() {
 
-        console.log("inizia richiesta", this.scope.id_request);
+        // console.log("inizia richiesta", this.scope.id_request);
         this.scope.onStartRequest(this.scope);
 
         // setTimeout(() => {
             this.scope.request.subscribe(
                 (evt) => {
                     RequestManager.request_counter--;
-                    console.log("fine richiesta", this.scope.id_request);
+                    // console.log("fine richiesta", this.scope.id_request);
                     this.scope.subscribeSuccess(evt);
                     // console.log("fine richiesta");
                     this.scope.onFinishRequest(this.scope);
@@ -344,7 +342,7 @@ export class RequestManager<R, T extends AbsListener> {
                 (error) => {
                     RequestManager.request_counter--;
                     this.scope.subscribeError(error);
-                    console.log("fine richiesta errore", this.scope.id_request);
+                    // console.log("fine richiesta errore", this.scope.id_request);
                     this.scope.onFinishRequest(this.scope);
                 }
             );
