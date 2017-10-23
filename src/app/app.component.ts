@@ -59,16 +59,16 @@ export class MyApp {
                 .testSrv
                 .signals
                 .onTestServiceSuccess.add(() => {
-                    console.log("signal onTestServiceSuccess");
+                    // console.log("signal onTestServiceSuccess");
                 }, this)
                 .onTestServiceError.add(() => {
-                    console.log("signal onTestServiceError");
+                    // console.log("signal onTestServiceError");
                 }, this);
 
             this.test_service
                 .testSrv
                 .request({some_data:"data", other_data:"more_data"})
-                .synchronize()
+                // .synchronize()
                 // .setRequestId("ziocan")
                 // .setListener(new class extends OnTestServiceMethodListener {
                 //
@@ -97,6 +97,42 @@ export class MyApp {
                 //         console.log("destroy");
                 //     }
                 // })
+                .run();
+
+            this.test_service
+                .testSrv
+                .request({some_data:"data", other_data:"more_data"})
+                .synchronize()
+                .run();
+
+            this.test_service
+                .testSrv
+                .request({some_data:"data", other_data:"more_data"})
+                .synchronize()
+                .run();
+
+            this.test_service
+                .testSrv
+                .request({some_data:"data", other_data:"more_data"})
+                .synchronize()
+                .run();
+
+            this.test_service
+                .testSrv
+                .request({some_data:"data", other_data:"more_data"})
+                .synchronize()
+                .run();
+
+            this.test_service
+                .testSrv
+                .request({some_data:"data", other_data:"more_data"})
+                .synchronize()
+                .run();
+
+            this.test_service
+                .testSrv
+                .request({some_data:"data", other_data:"more_data"})
+                .synchronize()
                 .run();
 
             this.test_service

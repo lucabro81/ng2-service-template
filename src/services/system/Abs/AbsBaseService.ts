@@ -22,7 +22,6 @@ export class AbsBaseService {
 
     private static loading:Loading;
 
-    private static stop_loading:number;
 
     /**
      *
@@ -188,21 +187,10 @@ export class AbsBaseService {
      * @param url
      * @returns {{}}
      */
-    protected onSuccess(response:Response, url:string, override_data:OverrideRequestDataVO):Promise<any> {
-        // console.log("response", response);
+    protected onSuccess(response:Response, url:string):Promise<any> {
+        console.log("response", response);
 
-        console.log("onSuccess fine richiesta");
-
-        // if (override_data.warning_level !== WarningLevel.SILENT) {
-        //     if (!AbsBaseService.is_loading_active) {
-        //         this.presentLoadingDefault();
-        //     }
-        //     else {
-        //         clearTimeout(AbsBaseService.stop_loading);
-        //     }
-        // }
-
-        this.nextRequest(override_data);
+        this.nextRequest();
 
         let body = response.json();
 
@@ -229,18 +217,13 @@ export class AbsBaseService {
                    error_callback:() => void,
                    warning_level:WarningLevel, options:any):ObservableInput<Response> {
 
-        console.log("onError fine richiesta", error, options);
+        // console.log("onError fine richiesta", error, options);
 
         // this.nextRequest();
 
         this.dispatchSignals(error_signals, error.json());
 
         if (error_intercept) {
-            if (AbsBaseService.is_loading_active) {
-                AbsBaseService.stop_loading = window.setTimeout(() => {
-                    this.dismissLoadingDefault();
-                }, 300);
-            }
             this.manageError(error.json(), error_callback, warning_level);
         }
 
@@ -269,17 +252,10 @@ export class AbsBaseService {
     }
 
     protected dismissLoadingDefault() {
-
-        // console.log("this.loading, AbsBaseService.is_loading_enabled",
-        //     this.loading, AbsBaseService.is_loading_enabled);
-
-        // if (AbsBaseService.loading && AbsBaseService.is_loading_enabled) {
-        // if (AbsBaseService.is_loading_active) {
-            AbsBaseService.is_loading_active = false;
-            AbsBaseService.loading.dismiss()
-                .then((sdf) => {})
-                .catch((errore) => {});
-        // }
+        AbsBaseService.is_loading_active = false;
+        AbsBaseService.loading.dismiss()
+            .then((sdf) => {})
+            .catch((errore) => {});
     }
 
     /**
@@ -312,8 +288,40 @@ export class AbsBaseService {
                          options:RequestVO,
                          success_handler: (response: ResponseVO<any>) => void,
                          error_handler: (error) => void):RequestManager<ResponseVO<any>, AbsListener> {
+
         let request:Observable<ResponseVO<any>> = this.requestGet<ResponseVO<any>>(options);
-        return request_manager.init(request, success_handler, error_handler);
+        request_manager.setStartAndFinishReqHandlers(options,
+            (request:RequestManager<ResponseVO<any>, AbsListener>) => {
+
+                let warning_level:WarningLevel;
+
+                // console.log("options", options);
+
+                if (request.options.warning_level_override) {
+                    warning_level = request.options.warning_level_override;
+                }
+                else {
+                    warning_level = request.options.endpoint.warning_level
+                }
+
+                if (warning_level !== WarningLevel.SILENT) {
+                    if (!AbsBaseService.is_loading_active && (RequestManager.request_counter > 0)) {
+                        this.presentLoadingDefault();
+                    }
+                }
+            },
+            (request:RequestManager<ResponseVO<any>, AbsListener>) => {
+                if (AbsBaseService.is_loading_active && (RequestManager.request_counter == 0)) {
+                    console.log("dismiss!!");
+                    this.dismissLoadingDefault();
+                }
+            }
+        );
+
+        return request_manager.init(request,
+            success_handler,
+            error_handler
+        );
     }
 
     /**
@@ -403,21 +411,11 @@ export class AbsBaseService {
             response = response.debounceTime(override_data.debounce).distinctUntilChanged();
         }
 
-        if (override_data.warning_level !== WarningLevel.SILENT) {
-            if (!AbsBaseService.is_loading_active) {
-                clearTimeout(AbsBaseService.stop_loading);
-                this.presentLoadingDefault();
-            }
-            // else {
-            //     clearTimeout(AbsBaseService.stop_loading);
-            // }
-        }
-
         return response
-            .flatMap((response:T) => {
-                return this.onSuccess(response, url, override_data)
+            .flatMap((response: T) => {
+                return this.onSuccess(response, url)
             })
-            .catch((response:any) => this.onError(response, options.error_signals, options.error_intercept,
+            .catch((response: any) => this.onError(response, options.error_signals, options.error_intercept,
                 options.error_callback, override_data.warning_level, options));
     }
 
@@ -508,7 +506,7 @@ export class AbsBaseService {
         }
     }
 
-    private nextRequest(override_data:OverrideRequestDataVO) {
+    private nextRequest() {
 
         console.log("next!!!!");
 
@@ -517,14 +515,6 @@ export class AbsBaseService {
             RequestManager.request_queue_list.start.data.subscribe();
         }
         else {
-
-            // FIXME: da vedere come fare per chiamate non sincronizate
-            if (AbsBaseService.is_loading_active) {
-                AbsBaseService.stop_loading = window.setTimeout(() => {
-                    this.dismissLoadingDefault();
-                }, 300);
-            }
-
             RequestManager.request_queue_list.destroy();
         }
 

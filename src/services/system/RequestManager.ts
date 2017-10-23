@@ -5,20 +5,26 @@ import {AbsListener} from "./Listener/AbsListener";
 import {Listener} from "./Listener/Listener";
 import {LinkedList} from "lucabro-linked-list/package/LinkedList";
 import {ListElement} from "lucabro-linked-list/package/ListElement";
+import {Signal} from "signals";
+import {RequestVO} from "../../vo/RequestVO";
 
 export class RequestManager<R, T extends AbsListener> {
 
     // public static
+    // public static onStartRequest:Signal = new Signal();
+    // public static onFinishRequest:Signal = new Signal();
     public static request_queue_list:LinkedList<ListElement>;
     public static listener_decorator:Array<{id:string, listener:any}> = [];
     public static request_manager_list:{[id:string]:any} = {};
     public static signals:{[id:string]:any} = {};
     public static is_stop_on_error_active:boolean = false;
     public static stop_on_error_active_callback:(evt:any) => void;
+    public static request_counter:number = 0;
 
     // public
     public listener:Listener;
     public id_request:string;
+    public options:RequestVO;
 
     // private static
     private static id_index:number = 0;
@@ -28,6 +34,9 @@ export class RequestManager<R, T extends AbsListener> {
     private request:Observable<R>;
     private onSuccess:(evt) => void;
     private onError:(error) => void;
+    private onStartRequest:(request:RequestManager<R, T>) => void;
+    private onFinishRequest:(request:RequestManager<R, T>) => void;
+    private context:any;
     private scope:RequestManager<R, T>; // only for interface purpose
 
 /////////////////////////////////
@@ -61,13 +70,21 @@ export class RequestManager<R, T extends AbsListener> {
      * @param request
      * @param onSuccess
      * @param onError
-     * @param signals
+     * @param options
+     * @param onStartRequest
+     * @param onFinishRequest
      * @returns {RequestManager}
      */
-    public init(request:Observable<R>, onSuccess:(evt) => void, onError:(error) => void):RequestManager<R, T> {
+    public init(request:Observable<R>,
+                onSuccess:(evt) => void,
+                onError:(error) => void):RequestManager<R, T> {
+
         this.request = request;
         this.onSuccess = onSuccess;
         this.onError = onError;
+
+        RequestManager.request_counter++;
+
         return this;
     }
 
@@ -192,6 +209,21 @@ export class RequestManager<R, T extends AbsListener> {
     }
 
     /**
+     *
+     * @param context
+     * @param options
+     * @param onStartRequest
+     * @param onFinishRequest
+     */
+    public setStartAndFinishReqHandlers(options?:RequestVO,
+                                        onStartRequest?:(request:RequestManager<R, T>) => void,
+                                        onFinishRequest?:(request:RequestManager<R, T>) => void) {
+        this.options = options;
+        this.onStartRequest = onStartRequest;
+        this.onFinishRequest = onFinishRequest;
+    }
+
+    /**
      * Run the current request
      */
     public run() {
@@ -236,9 +268,9 @@ export class RequestManager<R, T extends AbsListener> {
 
         if (this.is_synchronized) {
             RequestManager.request_queue_list.addElem({ subscribe: this.setSubscribe, scope:this});
-            console.log("RequestManager.request_queue_list.length()", RequestManager.request_queue_list.length());
+
             if (RequestManager.request_queue_list.length() === 1) {
-                console.log("dfghjk");
+                console.log("prima richiesta");
                 return RequestManager.request_queue_list.start.data.subscribe();
             }
 
@@ -296,14 +328,27 @@ export class RequestManager<R, T extends AbsListener> {
      *
      */
     private setSubscribe() {
-        this.scope.request.subscribe(
-            (evt) => {
-                this.scope.subscribeSuccess(evt);
-            },
-            (error) => {
-                this.scope.subscribeError(error);
-            }
-        );
+
+        console.log("inizia richiesta", this.scope.id_request);
+        this.scope.onStartRequest(this.scope);
+
+        // setTimeout(() => {
+            this.scope.request.subscribe(
+                (evt) => {
+                    RequestManager.request_counter--;
+                    console.log("fine richiesta", this.scope.id_request);
+                    this.scope.subscribeSuccess(evt);
+                    // console.log("fine richiesta");
+                    this.scope.onFinishRequest(this.scope);
+                },
+                (error) => {
+                    RequestManager.request_counter--;
+                    this.scope.subscribeError(error);
+                    console.log("fine richiesta errore", this.scope.id_request);
+                    this.scope.onFinishRequest(this.scope);
+                }
+            );
+        // }, 2000);
     }
 
     /**
