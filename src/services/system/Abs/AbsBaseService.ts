@@ -13,15 +13,12 @@ import {RequestManager} from "../RequestManager";
 import {ResponseVO} from "../../../vo/ResponseVO";
 import {AbsListener} from "../Listener/AbsListener";
 import {IService} from "../IService";
+import {AbsAppIonicBaseService} from "./AbsAppIonicBaseService";
 
-export class AbsBaseService {
+// export class AbsBaseService extends AbsWebBaseService {
+export class AbsBaseService extends AbsAppIonicBaseService {
 
-    protected static is_loading_active:boolean = false;
-    protected static is_loading_enabled:boolean = false;
     protected static is_connection_enabled:boolean = true;
-
-    private static loading:Loading;
-
 
     /**
      *
@@ -34,7 +31,7 @@ export class AbsBaseService {
     constructor(protected http:Http,
                 protected alertCtrl:AlertController,
                 protected loadingCtrl:LoadingController) {
-
+        super(loadingCtrl)
     }
 
 ///////////////////////////////
@@ -238,26 +235,6 @@ export class AbsBaseService {
         return Observable.throw(error_json || 'Server error');
     }
 
-    protected presentLoadingDefault() {
-
-        // if (AbsBaseService.is_loading_enabled) {
-            AbsBaseService.is_loading_active = true;
-
-            AbsBaseService.loading = this.loadingCtrl.create({
-                content: 'Caricamento'
-            });
-
-            AbsBaseService.loading.present();
-        // }
-    }
-
-    protected dismissLoadingDefault() {
-        AbsBaseService.is_loading_active = false;
-        AbsBaseService.loading.dismiss()
-            .then((sdf) => {})
-            .catch((errore) => {});
-    }
-
     /**
      *
      * @param id_request
@@ -284,40 +261,52 @@ export class AbsBaseService {
      * @param error_handler
      * @returns {RequestManager<ResponseVO<R>, ResponseVO<any>>}
      */
-    public setRequestGet(request_manager:RequestManager<ResponseVO<any>, AbsListener>,
+    protected setRequestGET(request_manager:RequestManager<ResponseVO<any>, AbsListener>,
                          options:RequestVO,
                          success_handler: (response: ResponseVO<any>) => void,
                          error_handler: (error) => void):RequestManager<ResponseVO<any>, AbsListener> {
-
         let request:Observable<ResponseVO<any>> = this.requestGet<ResponseVO<any>>(options);
-        request_manager.setStartAndFinishReqHandlers(options,
-            (request:RequestManager<ResponseVO<any>, AbsListener>) => {
-
-                let warning_level:WarningLevel;
-
-                // console.log("options", options);
-
-                if (request.options.warning_level_override) {
-                    warning_level = request.options.warning_level_override;
-                }
-                else {
-                    warning_level = request.options.endpoint.warning_level
-                }
-
-                if (warning_level !== WarningLevel.SILENT) {
-                    if (!AbsBaseService.is_loading_active && (RequestManager.request_counter > 0)) {
-                        this.presentLoadingDefault();
-                    }
-                }
-            },
-            (request:RequestManager<ResponseVO<any>, AbsListener>) => {
-                if (AbsBaseService.is_loading_active && (RequestManager.request_counter == 0)) {
-                    console.log("dismiss!!");
-                    this.dismissLoadingDefault();
-                }
-            }
+        this.setHandlers(request_manager, options);
+        return request_manager.init(request,
+            success_handler,
+            error_handler
         );
+    }
 
+    /**
+     *
+     * @param request_manager
+     * @param options
+     * @param success_handler
+     * @param error_handler
+     * @returns {RequestManager<ResponseVO<R>, ResponseVO<any>>}
+     */
+    protected setRequestPOST(request_manager:RequestManager<ResponseVO<any>, AbsListener>,
+                            options:RequestVO,
+                            success_handler: (response: ResponseVO<any>) => void,
+                            error_handler: (error) => void):RequestManager<ResponseVO<any>, AbsListener> {
+        let request:Observable<ResponseVO<any>> = this.requestPost<ResponseVO<any>>(options);
+        this.setHandlers(request_manager, options);
+        return request_manager.init(request,
+            success_handler,
+            error_handler
+        );
+    }
+
+    /**
+     *
+     * @param request_manager
+     * @param options
+     * @param success_handler
+     * @param error_handler
+     * @returns {RequestManager<ResponseVO<R>, ResponseVO<any>>}
+     */
+    protected setRequestPUT(request_manager:RequestManager<ResponseVO<any>, AbsListener>,
+                             options:RequestVO,
+                             success_handler: (response: ResponseVO<any>) => void,
+                             error_handler: (error) => void):RequestManager<ResponseVO<any>, AbsListener> {
+        let request:Observable<ResponseVO<any>> = this.requestPut<ResponseVO<any>>(options);
+        this.setHandlers(request_manager, options);
         return request_manager.init(request,
             success_handler,
             error_handler

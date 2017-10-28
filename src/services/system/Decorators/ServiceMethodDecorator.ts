@@ -4,7 +4,7 @@ import {RequestManager} from "../RequestManager";
 import {AbsListener} from "../Listener/AbsListener";
 import {RequestVO} from "../../../vo/RequestVO";
 
-export function ServiceMethodDecorator<R, L extends AbsListener>(endpoint:RequestVO):(
+export function ServiceMethodDecorator<R, L extends AbsListener>(endpoint:RequestVO, method:string):(
     target: Object,
     key: string,
     descriptor: any)=> TypedPropertyDescriptor<(params:any) => RequestManager<R, L>> {
@@ -45,7 +45,7 @@ export function ServiceMethodDecorator<R, L extends AbsListener>(endpoint:Reques
                 endpoint["data"] = args[0];
                 // FIXME: se uso questa ottengo: Untyped function calls may not accept type arguments
                 // return this.setRequestGet<R, L>
-                return <RequestManager<R, L>>this.setRequestGet(
+                return <RequestManager<R, L>>this["setRequest"+method.toUpperCase()](
                     args[0]["request_manager"],
                     endpoint,
                     result["success_handler"],

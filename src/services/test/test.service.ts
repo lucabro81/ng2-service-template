@@ -35,7 +35,7 @@ export class TestService extends AbsBaseService {
     @ServiceMethodDecorator<ResponseVO<any>, OnTestServiceMethodListener>({
         endpoint: EndPoints.USERS_ME,
         config: {}
-    })
+    }, "GET")
     private _testSrv(params:any):any {
         return {
             success_handler:

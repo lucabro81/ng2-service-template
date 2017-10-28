@@ -268,7 +268,6 @@ export class RequestManager<R, T extends AbsListener> {
             RequestManager.request_queue_list.addElem({ subscribe: this.setSubscribe, scope:this});
 
             if (RequestManager.request_queue_list.length() === 1) {
-                console.log("prima richiesta");
                 return RequestManager.request_queue_list.start.data.subscribe();
             }
 
@@ -327,7 +326,7 @@ export class RequestManager<R, T extends AbsListener> {
      */
     private setSubscribe() {
 
-        // console.log("inizia richiesta", this.scope.id_request);
+        console.log("inizia richiesta", this.scope);
         this.scope.onStartRequest(this.scope);
 
         // setTimeout(() => {
