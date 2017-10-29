@@ -336,16 +336,16 @@ export class AbsBaseService extends AbsAppIonicBaseService {
      * @param obj_name
      * @returns {IService<R, L, S>}
      */
-    protected setServiceObj<R, L extends AbsListener, S, P>(signal_container:{new(): S; }, obj_name:string):IService<R, L, S, P> {
-        let service_obj:IService<R, L, S, P> = <IService<R, L, S, P>>{};
+    protected setServiceObj(signal_container:{new(): any; }, obj_name:string):IService<any, AbsListener, any, any> {
+        let service_obj:IService<any, AbsListener, any, any> = <IService<any, AbsListener, any, any>>{};
 
         service_obj.request =
-            (params:any):RequestManager<ResponseVO<R>, L> => {
+            (params:any):RequestManager<ResponseVO<any>, AbsListener> => {
                 return this["_" + obj_name](params);
             };
 
         service_obj.signals = new signal_container();
-        service_obj.properties = <P>{};
+        service_obj.properties = {};
 
         return service_obj;
     }
