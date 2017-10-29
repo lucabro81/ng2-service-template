@@ -58,11 +58,11 @@ export class MyApp {
             this.test_service
                 .testSrv
                 .signals
-                .onTestServiceSuccess.add(() => {
-                    // console.log("signal onTestServiceSuccess");
-                console.log("this.test_service.testSrv.properties.prop1", this.test_service.testSrv.properties.prop1);
+                .onTestServiceSuccess.add((scope:any, params:Array<any>) => {
+                    console.log("signal onTestServiceSuccess", scope, params);
+                    console.log("this.test_service.testSrv.properties.prop1", scope.properties.prop1);
                 }, this)
-                .onTestServiceError.add(() => {
+                .onTestServiceError.add((scope:any, params:Array<any>) => {
                     // console.log("signal onTestServiceError");
                 }, this);
             //

@@ -41,7 +41,7 @@ export class AbsDecoratedSignal<T> {
      * listeners with lower priority. Listeners with same priority level will be executed at the same order as they
      * were added. (default = 0)
      */
-    public add(listener: Function,
+    public add(listener: (scope:any, params:Array<any>) => void,
                listenerContext?: any,
                priority?: Number):T {
         this.decorated_signal.add(listener, listenerContext, priority);
@@ -72,7 +72,7 @@ export class AbsDecoratedSignal<T> {
      * @param params Parameters that should be passed to each handler.
      */
     public dispatch(...params: any[]): T {
-        this.decorated_signal.dispatch(params);
+        this.decorated_signal.dispatch(params[0], params[1]);
         return this.container;
     }
 

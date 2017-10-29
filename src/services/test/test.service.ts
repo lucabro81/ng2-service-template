@@ -68,16 +68,16 @@ export class TestService extends AbsBaseService {
                 (response: ResponseVO<any>) => {
                     this.testSrv.properties.prop1 = Math.random();
                     this.testSrv.properties.prop2 = "" + Math.random();
-                    this.testSrv.signals.onTestServiceSuccess.dispatch();
+                    this.testSrv.signals.onTestServiceSuccess.dispatch(this.testSrv, ["asdadasd"]);
                     this.fireEvent(params.request_manager, "eventOne", response);
-                    this.testSrv.signals.onTestServiceEventOne.dispatch();
+                    this.testSrv.signals.onTestServiceEventOne.dispatch(this.testSrv, ["asdadasd1"]);
                 },
 
             error_handler:
                 (error) => {
                     this.testSrv.signals.onTestServiceError.dispatch();
                     this.fireEvent(params.request_manager, "eventTwo", error);
-                    this.testSrv.signals.onTestServiceEventOne.dispatch();
+                    this.testSrv.signals.onTestServiceEventOne.dispatch(this.testSrv, ["asdadasd2"]);
                 }
         }
     }
