@@ -60,14 +60,15 @@ export class MyApp {
                 .signals
                 .onTestServiceSuccess.add(() => {
                     // console.log("signal onTestServiceSuccess");
+                console.log("this.test_service.testSrv.properties.prop1", this.test_service.testSrv.properties.prop1);
                 }, this)
                 .onTestServiceError.add(() => {
                     // console.log("signal onTestServiceError");
                 }, this);
-
-            this.test_service
-                .testSrv
-                .request({some_data:"data", other_data:"more_data"})
+            //
+            // this.test_service
+            //     .testSrv
+            //     .request({some_data:"data", other_data:"more_data"})
                 // .synchronize()
                 // .setRequestId("ziocan")
                 // .setListener(new class extends OnTestServiceMethodListener {
@@ -97,55 +98,56 @@ export class MyApp {
                 //         console.log("destroy");
                 //     }
                 // })
-                .run();
+                // .run();
 
             this.test_service
                 .testSrv
+                // .request({some_data:"data", other_data:"more_data"}, this.test_service)
                 .request({some_data:"data", other_data:"more_data"})
                 .synchronize()
                 .run();
 
-            this.test_service
-                .testSrv
-                .request({some_data:"data", other_data:"more_data"})
-                .synchronize()
-                .run();
-
-            this.test_service
-                .testSrv
-                .request({some_data:"data", other_data:"more_data"})
-                .synchronize()
-                .run();
-
-            this.test_service
-                .testSrv
-                .request({some_data:"data", other_data:"more_data"})
-                .synchronize()
-                .run();
-
-            this.test_service
-                .testSrv
-                .request({some_data:"data", other_data:"more_data"})
-                .synchronize()
-                .run();
-
-            this.test_service
-                .testSrv
-                .request({some_data:"data", other_data:"more_data"})
-                .synchronize()
-                .run();
-
-            this.test_service
-                .testSrv
-                .request({some_data:"data", other_data:"more_data"})
-                .synchronize()
-                .run();
-
-            this.test_service
-                .testSrv
-                .request({some_data:"data", other_data:"more_data"})
-                .synchronize()
-                .run();
+            // this.test_service
+            //     .testSrv
+            //     .request({some_data:"data", other_data:"more_data"})
+            //     .synchronize()
+            //     .run();
+            //
+            // this.test_service
+            //     .testSrv
+            //     .request({some_data:"data", other_data:"more_data"})
+            //     .synchronize()
+            //     .run();
+            //
+            // this.test_service
+            //     .testSrv
+            //     .request({some_data:"data", other_data:"more_data"})
+            //     .synchronize()
+            //     .run();
+            //
+            // this.test_service
+            //     .testSrv
+            //     .request({some_data:"data", other_data:"more_data"})
+            //     .synchronize()
+            //     .run();
+            //
+            // this.test_service
+            //     .testSrv
+            //     .request({some_data:"data", other_data:"more_data"})
+            //     .synchronize()
+            //     .run();
+            //
+            // this.test_service
+            //     .testSrv
+            //     .request({some_data:"data", other_data:"more_data"})
+            //     .synchronize()
+            //     .run();
+            //
+            // this.test_service
+            //     .testSrv
+            //     .request({some_data:"data", other_data:"more_data"})
+            //     .synchronize()
+            //     .run();
         });
     }
 }

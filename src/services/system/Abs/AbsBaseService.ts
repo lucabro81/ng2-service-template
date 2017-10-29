@@ -46,7 +46,7 @@ export class AbsBaseService extends AbsAppIonicBaseService {
      */
     protected requestGet<T extends Response>(options:RequestVO):Observable<T> {
 
-        console.log("registrazione richiesta");
+        console.log("registrazione richiesta", this);
 
         options.config.headers = this.setHeaders(options);
         //
@@ -336,8 +336,8 @@ export class AbsBaseService extends AbsAppIonicBaseService {
      * @param obj_name
      * @returns {IService<R, L, S>}
      */
-    protected setServiceObj<R, L extends AbsListener, S>(signal_container:{new(): S; }, obj_name:string):IService<R, L, S> {
-        let service_obj:IService<R, L, S> = <IService<R, L, S>>{};
+    protected setServiceObj<R, L extends AbsListener, S, P>(signal_container:{new(): S; }, obj_name:string):IService<R, L, S, P> {
+        let service_obj:IService<R, L, S, P> = <IService<R, L, S, P>>{};
 
         service_obj.request =
             (params:any):RequestManager<ResponseVO<R>, L> => {
@@ -345,6 +345,7 @@ export class AbsBaseService extends AbsAppIonicBaseService {
             };
 
         service_obj.signals = new signal_container();
+        service_obj.properties = <P>{};
 
         return service_obj;
     }
