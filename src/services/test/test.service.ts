@@ -8,8 +8,8 @@ import {AlertController, LoadingController} from "ionic-angular";
 import {OnTestServiceMethodListener} from "./decorators/OnTestServiceMethodListener";
 import {TestServiceMethodSignalContainer} from "./decorators/TestServiceMethodSignalContainer";
 import {IService} from "../system/IService";
-import {Get} from "../system/Decorators/ServiceMethodRequestDecorator";
-import {MemMethod, MemProps, Platform} from "../system/Decorators/HandleTokenDecorator";
+import {Get, SetStorage} from "../system/Decorators/ServiceMethodRequestDecorators";
+import {MemMethod, Platform} from "../system/Decorators/HandleTokenDecorator";
 
 @Injectable()
 export class TestService extends AbsBaseService {
@@ -42,7 +42,7 @@ export class TestService extends AbsBaseService {
             endpoint: EndPoints.USERS_ME,
             config: {}
         })
-    @MemProps([
+    @SetStorage([
         {
             "prop1": [{
                 platform:Platform.ANDROID,
