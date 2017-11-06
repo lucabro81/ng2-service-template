@@ -55,16 +55,16 @@ export class MyApp {
             //     .testServiceObj
             //     .signals);
 
-            this.test_service
-                .testSrv
-                .signals
-                .onTestServiceSuccess.add((scope:any, params:Array<any>) => {
-                    console.log("signal onTestServiceSuccess", scope, params);
-                    console.log("this.test_service.testSrv.properties.prop1", scope.properties.prop1);
-                }, this)
-                .onTestServiceError.add((scope:any, params:Array<any>) => {
-                    // console.log("signal onTestServiceError");
-                }, this);
+            // this.test_service
+            //     .testSrv
+            //     .signals
+            //     .onTestServiceSuccess.add((scope:any, params:Array<any>) => {
+            //         console.log("signal onTestServiceSuccess", scope, params);
+            //         console.log("this.test_service.testSrv.properties.prop1", scope.properties.prop1);
+            //     }, this)
+            //     .onTestServiceError.add((scope:any, params:Array<any>) => {
+            //         // console.log("signal onTestServiceError");
+            //     }, this);
             //
             // this.test_service
             //     .testSrv
@@ -100,12 +100,11 @@ export class MyApp {
                 // })
                 // .run();
 
-            this.test_service
-                .testSrv
-                // .request({some_data:"data", other_data:"more_data"}, this.test_service)
-                .request({some_data:"data", other_data:"more_data"})
-                .synchronize()
-                .run();
+            // this.test_service
+            //     .testSrv
+            //     .request({some_data:"data", other_data:"more_data"})
+            //     .synchronize()
+            //     .run();
 
             // this.test_service
             //     .testSrv

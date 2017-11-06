@@ -14,6 +14,7 @@ import {ResponseVO} from "../../../vo/ResponseVO";
 import {AbsListener} from "../Listener/AbsListener";
 import {IService} from "../IService";
 import {AbsAppIonicBaseService} from "./AbsAppIonicBaseService";
+import {setLocalStorage} from "../Decorators/ServiceMethodRequestDecorators";
 
 // export class AbsBaseService extends AbsWebBaseService {
 export class AbsBaseService extends AbsAppIonicBaseService {
@@ -334,9 +335,12 @@ export class AbsBaseService extends AbsAppIonicBaseService {
      *
      * @param signal_container
      * @param method_name
-     * @returns {IService<R, L, S>}
+     * @param testSrvProperties
+     * @returns {IService<any, AbsListener, any, any>}
      */
-    protected setServiceObj(signal_container:{new(): any; }, method_name:string):IService<any, AbsListener, any, any> {
+    protected setServiceObj(signal_container:{new(): any; },
+                            method_name:string,
+                            testSrvProperties:{new(): any; }):IService<any, AbsListener, any, any> {
         let service_obj:IService<any, AbsListener, any, any> = <IService<any, AbsListener, any, any>>{};
 
         service_obj.request =
@@ -345,7 +349,8 @@ export class AbsBaseService extends AbsAppIonicBaseService {
             };
 
         service_obj.signals = new signal_container();
-        service_obj.properties = {};
+
+        service_obj.properties = new testSrvProperties();
 
         return service_obj;
     }

@@ -8,17 +8,20 @@ import {AlertController, LoadingController} from "ionic-angular";
 import {OnTestServiceMethodListener} from "./decorators/OnTestServiceMethodListener";
 import {TestServiceMethodSignalContainer} from "./decorators/TestServiceMethodSignalContainer";
 import {IService} from "../system/IService";
-import {Get, SetStorage} from "../system/Decorators/ServiceMethodRequestDecorators";
-import {MemMethod, Platform} from "../system/Decorators/HandleTokenDecorator";
+import {Get, setLocalStorage} from "../system/Decorators/ServiceMethodRequestDecorators";
+
+class testSrvProperties {
+    @setLocalStorage()
+    prop1:string;
+    @setLocalStorage()
+    prop2:number;
+}
 
 @Injectable()
 export class TestService extends AbsBaseService {
 
-    public testSrv:IService<any, OnTestServiceMethodListener, TestServiceMethodSignalContainer,
-        {
-            prop1:number,
-            prop2:string
-        }>;
+    // @setLocalStorage("properties.prop1", "properties.prop2")
+    public testSrv:IService<any, OnTestServiceMethodListener, TestServiceMethodSignalContainer, testSrvProperties>;
 
     constructor(protected http:Http,
                 protected alertCtrl:AlertController,
@@ -27,10 +30,7 @@ export class TestService extends AbsBaseService {
 
         ////////////////////////////////////////////////////////
 
-        this.testSrv = this.setServiceObj(TestServiceMethodSignalContainer, "testSrv");
-
-        ////////////////////////////////////////////////////////
-
+        this.testSrv = this.setServiceObj(TestServiceMethodSignalContainer, "testSrv", testSrvProperties);
     }
 
     /**
@@ -42,32 +42,12 @@ export class TestService extends AbsBaseService {
             endpoint: EndPoints.USERS_ME,
             config: {}
         })
-    @SetStorage([
-        {
-            "prop1": [{
-                platform:Platform.ANDROID,
-                method:MemMethod.LOCALHOST
-            }, {
-                platform:Platform.IOS,
-                method:MemMethod.SECURESTORAGE
-            }]
-        },
-        {
-            "prop2": [{
-                platform:Platform.ANDROID,
-                method:MemMethod.LOCALHOST
-            }, {
-                platform:Platform.IOS,
-                method:MemMethod.SECURESTORAGE
-            }]
-        }
-    ])
     private _testSrv(params:any):any {
         return {
             success_handler:
                 (response: ResponseVO<any>) => {
-                    this.testSrv.properties.prop1 = Math.random();
-                    this.testSrv.properties.prop2 = "" + Math.random();
+                    this.testSrv.properties.prop2 = Math.random();
+                    this.testSrv.properties.prop1 = "" + Math.random();
                     this.testSrv.signals.onTestServiceSuccess.dispatch(this.testSrv, ["asdadasd"]);
                     this.fireEvent(params.request_manager, "eventOne", response);
                     this.testSrv.signals.onTestServiceEventOne.dispatch(this.testSrv, ["asdadasd1"]);
