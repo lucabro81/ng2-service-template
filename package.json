@@ -21,6 +21,8 @@
     "@angular/platform-browser": "4.4.3",
     "@angular/platform-browser-dynamic": "4.4.3",
     "@ionic-native/core": "4.3.0",
+    "@ionic-native/file": "^4.3.3",
+    "@ionic-native/secure-storage": "^4.3.3",
     "@ionic-native/splash-screen": "4.3.0",
     "@ionic-native/status-bar": "4.3.0",
     "@ionic/storage": "2.0.1",
