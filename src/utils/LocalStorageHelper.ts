@@ -14,20 +14,6 @@ export class LocalStorageHelper {
     /**
      *
      * @param key
-     * @returns {any}
-     */
-    public static typeOf(key:string):string {
-        let value = window.localStorage.getItem(key);
-        if (value) {
-            return typeof(window.localStorage.getItem(key));
-        }
-        return null
-
-    }
-
-    /**
-     *
-     * @param key
      * @param data
      */
     public static setItemString(key:string, data:string) {
