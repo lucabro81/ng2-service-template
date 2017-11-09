@@ -90,9 +90,39 @@ export function setSecureStorage() {
  * @returns {(target:any, key:string)=>undefined}
  */
 export function setFileStorage() {
+
+    const promiseQueue = [];
+
+    const dequeue = () => {
+        promiseQueue.splice(0, 1);
+    };
+
     return (target: any, key: string) => {
 
         let _val = target[key];
+
+        // property getter
+        let getter = function () {
+
+        };
+
+        // property setter
+        let setter = function (newVal) {
+
+        };
+
+        // // Delete property.
+        if (delete target[key]) {
+
+            // Create new property with getter and setter
+            Object.defineProperty(target, key, {
+                get: getter,
+                set: setter,
+                enumerable: true,
+                configurable: true
+            });
+
+        }
 
     }
 }
