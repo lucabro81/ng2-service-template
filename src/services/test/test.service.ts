@@ -1,19 +1,16 @@
 import {Injectable, Type} from "@angular/core";
-import {RequestManager} from "../system/RequestManager";
-import {AbsBaseService} from "../system/Abs/AbsBaseService";
 import {EndPoints} from "../../utils/EndPoints";
 import {ResponseVO} from "../../vo/ResponseVO";
 import { Http } from "@angular/http";
 import {AlertController, LoadingController} from "ionic-angular";
 import {OnTestServiceMethodListener} from "./decorators/OnTestServiceMethodListener";
 import {TestServiceMethodSignalContainer} from "./decorators/TestServiceMethodSignalContainer";
-import {IService} from "../system/IService";
-import {Get, setLocalStorage} from "../system/Decorators/ServiceMethodRequestDecorators";
+import {AbsBaseService} from "../../IonicAppModule/services/Abs/AbsBaseService";
+import {IService} from "../../IonicAppModule/services/System/IService";
+import {Get} from "../../IonicAppModule/services/Decorators/ServiceMethodRequestDecorators";
 
 class testSrvProperties {
-    @setLocalStorage()
     prop1:string;
-    @setLocalStorage()
     prop2:number;
 }
 

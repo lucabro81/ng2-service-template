@@ -1,12 +1,11 @@
 // TODO: set a request priority
 
 import {Observable} from "rxjs";
-import {AbsListener} from "./Listener/AbsListener";
-import {Listener} from "./Listener/Listener";
 import {LinkedList} from "lucabro-linked-list/package/LinkedList";
 import {ListElement} from "lucabro-linked-list/package/ListElement";
-import {Signal} from "signals";
-import {RequestVO} from "../../vo/RequestVO";
+import {AbsListener} from "../Listener/AbsListener";
+import {Listener} from "../Listener/Listener";
+import {RequestVO} from "../../../vo/RequestVO";
 
 export class RequestManager<R, T extends AbsListener> {
 

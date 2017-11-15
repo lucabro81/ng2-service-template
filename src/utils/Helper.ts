@@ -18,31 +18,4 @@ export class Helper {
         return Helper.instance;
     }
 
-    public store<T>(key:string, value:T, behaviour:any):void {
-
-    }
-
-    public read<T>(key:string, default_value:T, behaviour:any):T {
-
-    }
-
-    public readFile<T>(key:string, default_value:T, behaviour:any):T {
-
-    }
-
-    public storeFile<T>(key:string, value:T, behaviour:any):void {
-
-    }
-
-    public readFile<T>(key:string, default_value:T, behaviour:any):T {
-
-    }
-
-    public storeSecureStorage<T>(key:string, value:T, behaviour:any):void {
-
-    }
-
-    public readSecureStorage<T>(key:string, default_value:T, behaviour:any):T {
-
-    }
 }

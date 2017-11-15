@@ -1,18 +1,22 @@
-import {RequestManager} from "../RequestManager";
 import {ResponseVO} from "../../../vo/ResponseVO";
 import {RequestVO} from "../../../vo/RequestVO";
 import {AbsListener} from "../Listener/AbsListener";
 import {WarningLevel} from "../../../utils/Emun";
+import {Loading, LoadingController} from "ionic-angular";
+import {RequestManager} from "../System/RequestManager";
 
-export class AbsWebBaseService {
+export class AbsAppIonicBaseService {
 
     protected static is_loading_active:boolean = false;
     protected static is_loading_enabled:boolean = false;
 
+    private static loading:Loading;
+
     /**
      *
+     * @param loadingCtrl
      */
-    constructor() {}
+    constructor(protected loadingCtrl:LoadingController) {}
 
     /**
      *
@@ -33,13 +37,13 @@ export class AbsWebBaseService {
                 }
 
                 if (warning_level !== WarningLevel.SILENT) {
-                    if (!AbsWebBaseService.is_loading_active && (RequestManager.request_counter > 0)) {
+                    if (!AbsAppIonicBaseService.is_loading_active && (RequestManager.request_counter > 0)) {
                         this.presentLoadingDefault();
                     }
                 }
             },
             (request:RequestManager<ResponseVO<any>, AbsListener>) => {
-                if (AbsWebBaseService.is_loading_active && (RequestManager.request_counter == 0)) {
+                if (AbsAppIonicBaseService.is_loading_active && (RequestManager.request_counter == 0)) {
                     console.log("dismiss!!");
                     this.dismissLoadingDefault();
                 }
@@ -51,15 +55,21 @@ export class AbsWebBaseService {
      *
      */
     protected presentLoadingDefault() {
-        AbsWebBaseService.is_loading_active = true;
-        console.log("presentLoadingDefault");
+        AbsAppIonicBaseService.is_loading_active = true;
+        AbsAppIonicBaseService.loading = this.loadingCtrl.create({
+            content: 'Caricamento'
+        });
+        AbsAppIonicBaseService.loading.present();
     }
 
     /**
      *
      */
     protected dismissLoadingDefault() {
-        AbsWebBaseService.is_loading_active = false;
-        console.log("dismissLoadingDefault");
+        AbsAppIonicBaseService.is_loading_active = false;
+        AbsAppIonicBaseService.loading.dismiss()
+            .then((sdf) => {})
+            .catch((errore) => {});
     }
+
 }

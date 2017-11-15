@@ -3,12 +3,12 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-import { File } from '@ionic-native/file';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import {TestService} from "../services/test/test.service";
-import {HttpModule} from "@angular/http";
+import {IonicAppModule} from "../IonicAppModule/ionic-app.module";
+import {WebAppModule} from "../WebAppModule/web-app.module";
 
 @NgModule({
     declarations: [
@@ -19,7 +19,8 @@ import {HttpModule} from "@angular/http";
         BrowserModule,
         IonicModule.forRoot(MyApp),
 
-        HttpModule
+        IonicAppModule,
+        // WebAppModule
     ],
     bootstrap: [IonicApp],
     entryComponents: [
@@ -31,8 +32,7 @@ import {HttpModule} from "@angular/http";
         SplashScreen,
         {provide: ErrorHandler, useClass: IonicErrorHandler},
 
-        TestService,
-        File
+        TestService
     ]
 })
 export class AppModule {}

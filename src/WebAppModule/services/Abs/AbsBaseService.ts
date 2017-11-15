@@ -9,15 +9,15 @@ import { RequestVO } from "../../../vo/RequestVO";
 import { AlertController, Loading, LoadingController } from "ionic-angular";
 import { OverrideRequestDataVO } from "../../../vo/OverrideRequestDataVO";
 
-import {RequestManager} from "../RequestManager";
 import {ResponseVO} from "../../../vo/ResponseVO";
 import {AbsListener} from "../Listener/AbsListener";
-import {IService} from "../IService";
 import {AbsAppIonicBaseService} from "./AbsAppIonicBaseService";
-import {setLocalStorage} from "../Decorators/ServiceMethodRequestDecorators";
+import {RequestManager} from "../System/RequestManager";
+import {IService} from "../System/IService";
+import {AbsWebBaseService} from "./AbsWebBaseService";
 
 // export class AbsBaseService extends AbsWebBaseService {
-export class AbsBaseService extends AbsAppIonicBaseService {
+export class AbsBaseService extends AbsWebBaseService {
 
     protected static is_connection_enabled:boolean = true;
 
@@ -29,10 +29,8 @@ export class AbsBaseService extends AbsAppIonicBaseService {
      * @param loadingCtrl
      * @param secureStorage
      */
-    constructor(protected http:Http,
-                protected alertCtrl:AlertController,
-                protected loadingCtrl:LoadingController) {
-        super(loadingCtrl)
+    constructor(protected http:Http) {
+        super()
     }
 
 ///////////////////////////////
@@ -170,12 +168,7 @@ export class AbsBaseService extends AbsAppIonicBaseService {
      * @param message_obj
      */
     protected showAlert(message_obj:DefaultAlertStructureVO):void {
-        let alert = this.alertCtrl.create({
-            title: message_obj.title,
-            subTitle: message_obj.body,
-            buttons: message_obj.btn_arr
-        });
-        alert.present();
+        console.log("message_obj", message_obj);
     }
 
     /**

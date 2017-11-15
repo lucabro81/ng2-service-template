@@ -1,6 +1,6 @@
 // ref. https://gist.github.com/remojansen/16c661a7afd68e22ac6e
 
-import {RequestManager} from "../RequestManager";
+import {RequestManager} from "../System/RequestManager";
 import {AbsListener} from "../Listener/AbsListener";
 import {RequestVO} from "../../../vo/RequestVO";
 
