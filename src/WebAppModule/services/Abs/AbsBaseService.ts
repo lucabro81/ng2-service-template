@@ -11,10 +11,9 @@ import { OverrideRequestDataVO } from "../../../vo/OverrideRequestDataVO";
 
 import {ResponseVO} from "../../../vo/ResponseVO";
 import {AbsListener} from "../Listener/AbsListener";
-import {AbsAppIonicBaseService} from "./AbsAppIonicBaseService";
+import {AbsWebBaseService} from "./AbsWebBaseService";
 import {RequestManager} from "../System/RequestManager";
 import {IService} from "../System/IService";
-import {AbsWebBaseService} from "./AbsWebBaseService";
 
 // export class AbsBaseService extends AbsWebBaseService {
 export class AbsBaseService extends AbsWebBaseService {

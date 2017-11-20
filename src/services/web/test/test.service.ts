@@ -1,13 +1,13 @@
 import {Injectable, Type} from "@angular/core";
-import {EndPoints} from "../../utils/EndPoints";
-import {ResponseVO} from "../../vo/ResponseVO";
+import {EndPoints} from "../../../utils/EndPoints";
+import {ResponseVO} from "../../../vo/ResponseVO";
 import { Http } from "@angular/http";
 import {AlertController, LoadingController} from "ionic-angular";
 import {OnTestServiceMethodListener} from "./decorators/OnTestServiceMethodListener";
 import {TestServiceMethodSignalContainer} from "./decorators/TestServiceMethodSignalContainer";
-import {AbsBaseService} from "../../IonicAppModule/services/Abs/AbsBaseService";
-import {IService} from "../../IonicAppModule/services/System/IService";
-import {Get} from "../../IonicAppModule/services/Decorators/ServiceMethodRequestDecorators";
+import {AbsBaseService} from "../../../IonicAppModule/services/Abs/AbsBaseService";
+import {IService} from "../../../IonicAppModule/services/System/IService";
+import {Get} from "../../../IonicAppModule/services/Decorators/ServiceMethodRequestDecorators";
 
 class testSrvProperties {
     prop1:string;

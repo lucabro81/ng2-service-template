@@ -4,7 +4,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { HomePage } from '../pages/home/home';
-import {TestService} from "../services/test/test.service";
+import {TestService} from "../services/web/test/test.service";
 import {StorageService} from "../IonicAppModule/services/StorageService";
 
 @Component({

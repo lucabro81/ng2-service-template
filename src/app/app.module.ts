@@ -6,9 +6,11 @@ import { StatusBar } from '@ionic-native/status-bar';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
-import {TestService} from "../services/test/test.service";
+
+import {TestService} from "../services/web/test/test.service";
 import {IonicAppModule} from "../IonicAppModule/ionic-app.module";
-import {WebAppModule} from "../WebAppModule/web-app.module";
+import {MainService} from "../services/system/main.service";
+// import {WebAppModule} from "../WebAppModule/web-app.module";
 
 @NgModule({
     declarations: [
@@ -31,6 +33,8 @@ import {WebAppModule} from "../WebAppModule/web-app.module";
         StatusBar,
         SplashScreen,
         {provide: ErrorHandler, useClass: IonicErrorHandler},
+
+        MainService,
 
         TestService
     ]

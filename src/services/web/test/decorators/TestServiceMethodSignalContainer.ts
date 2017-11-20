@@ -1,6 +1,6 @@
 import {Signal} from "signals";
-import {AbsDecoratedSignal} from "../../../IonicAppModule/services/Abs/AbsDecoratedSignal";
-import {ISignal} from "../../../IonicAppModule/services/Signal/ISignal";
+import {AbsDecoratedSignal} from "../../../../IonicAppModule/services/Abs/AbsDecoratedSignal";
+import {ISignal} from "../../../../IonicAppModule/services/Signal/ISignal";
 
 /**
  *

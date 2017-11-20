@@ -1,4 +1,4 @@
-import {AbsListener} from "../../../IonicAppModule/services/Listener/AbsListener";
+import {AbsListener} from "../../../../IonicAppModule/services/Listener/AbsListener";
 
 export abstract class OnTestServiceMethodListener extends AbsListener {
 
