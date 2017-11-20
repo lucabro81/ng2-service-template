@@ -6,6 +6,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { HomePage } from '../pages/home/home';
 import {TestService} from "../services/web/test/test.service";
 import {StorageService} from "../IonicAppModule/services/StorageService";
+import {MainService} from "../services/system/main.service";
 
 @Component({
     templateUrl: 'app.html'
@@ -16,6 +17,7 @@ export class MyApp {
     constructor(platform: Platform,
                 statusBar: StatusBar,
                 splashScreen: SplashScreen,
+                private main_service:MainService,
                 public test_service:TestService,
                 public storage_service:StorageService) {
         platform.ready().then(() => {
@@ -109,7 +111,14 @@ export class MyApp {
                 .synchronize()
                 .run();
 
-            console.log("this.storage_service.has(\"asd\"): ", this.storage_service.has("asd"));
+
+            this.storage_service.has("asd")
+                .then((has:boolean) => {
+                    console.log("asdasdasdadd", has);
+                })
+                .catch((err:any) => {
+                    console.log("asdasdasdadd", err);
+                });
 
             // this.test_service
             //     .testSrv

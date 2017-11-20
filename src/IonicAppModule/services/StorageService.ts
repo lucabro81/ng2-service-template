@@ -9,7 +9,7 @@ export enum StorageType {
     SECURESTORAGE = 2,
 }
 
-interface IWhereHase {
+interface IWhereHas {
     has:boolean;
     where:StorageType;
 }
@@ -25,6 +25,10 @@ export class StorageService {
     private secure_storage:SecureStorage;
     private file_storage:File;
     private secure_storage_instance:SecureStorageObject;
+
+/////////////////////////////////
+////////// CONSTRUCTOR //////////
+/////////////////////////////////
 
     constructor(secure_storage:SecureStorage,
                 file_storage:File) {
@@ -48,9 +52,31 @@ export class StorageService {
             }
 
             if (Const.HAS_CORDOVA) {
+
+                // check in SecureStorage
                 this.getStoreInstance()
-                    .then((storage) => this.getInstanceSuccess(storage, key, resolve, reject))
-                    .catch()
+                    .then((storage) => {
+                        storage.secureDevice()
+                            .then((screenlock_value) => {
+                                if (screenlock_value === Const.DEVICE_SECURE) {
+                                    this.secure_storage_instance.keys()
+                                        .then((keys:Array<string>) => {
+                                            if (keys.length && keys.indexOf(key) >= 0) {
+                                                return resolve(true);
+                                            }
+                                            else {
+                                                return resolve(false);
+                                            }
+                                        })
+                                }
+                            })
+                            .catch((error) => {
+                                return reject();
+                            });
+                    })
+                    .catch((error) => {
+                        //TODO: check file
+                    });
             }
             else {
                 return resolve(false);
@@ -59,11 +85,42 @@ export class StorageService {
 
     }
 
-    public where(key:string):StorageType {
-        return null
+    public where(key:string):Promise<Array<StorageType>> {
+
+        let where_arr:Array<StorageType> = [];
+
+        return new Promise<Array<StorageType>>((resolve, reject) => {
+
+            let value = this.local_storage.getItem(key);
+            if (value) {
+                where_arr.push(StorageType.LOCALSTORAGE);
+                // return resolve(true);
+            }
+
+            if (Const.HAS_CORDOVA) {
+                this.getStoreInstance()
+                    .then((storage) => {
+                        storage.secureDevice()
+                            .then((screenlock_value) => {
+                                if (screenlock_value === Const.DEVICE_SECURE) {
+                                    where_arr.push(StorageType.SECURESTORAGE);
+                                }
+                            })
+                            .catch((error) => {
+                                return reject();
+                            });
+                    })
+                    .catch((error) => {
+
+                    });
+            }
+            else {
+                return resolve(where_arr);
+            }
+        });
     }
 
-    public whereHas(key:string):Array<IWhereHase> {
+    public whereHas(key:string):Array<IWhereHas> {
         return null
     }
 
@@ -234,37 +291,6 @@ export class StorageService {
                 }
             });
 
-    }
-
-    // TODO: tipi dei parametri
-    private secureDeviceSuccess(screenlock_value, key:string, resolve, reject):void {
-
-        console.log("StorageService -> secureDeviceSuccess -> screenlock_value: ", screenlock_value);
-
-        // if (screenlock_value /* TODO: verificare sto cazzo di valore! */) {
-        //     this.secure_storage_instance.keys()
-        //         .then((keys:Array<string>) => {
-        //             if (keys.length && keys.indexOf(key) >= 0) {
-        //                 return resolve(true);
-        //             }
-        //             else {
-        //                 return resolve(false);
-        //             }
-        //         })
-        // }
-    }
-
-    /**
-     *
-     * @param storage
-     * @param key
-     * @param resolve
-     * @param reject
-     */
-    private getInstanceSuccess(storage:SecureStorageObject, key:string, resolve, reject):void {
-        storage.secureDevice()
-            .then((screenlock_value) => this.secureDeviceSuccess(screenlock_value, key, resolve, reject))
-            .catch();
     }
 
 }

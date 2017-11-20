@@ -16,4 +16,6 @@ export class Const {
     public static HAS_ANDROID:boolean;
     public static HAS_IOS:boolean;
 
+    public static DEVICE_SECURE:string = "OK";
+
 }
